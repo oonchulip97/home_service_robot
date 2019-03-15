@@ -21,7 +21,7 @@ sudo apt-get install ros-kinetic-move-base
 
 Install teleop package.
 ```
-sudo apt-get install ros-kinetic-move-base
+sudo apt-get install ros-kinetic-teleop-twist-keyboard
 ```
 
 Finally build the workspace.
