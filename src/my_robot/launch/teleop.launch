@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<launch>
+
+  <!-- Launch world -->
+  <include file="$(find my_robot)/launch/world.launch"/>
+
+  <!-- Launch teleop -->
+  <node name="teleop_twist_keyboard" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" respawn="false"/>
+
+</launch>
