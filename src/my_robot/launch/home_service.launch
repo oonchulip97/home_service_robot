@@ -1,0 +1,48 @@
+<launch>
+
+  <!-- Map Server -->
+  <arg name="map_file" default="$(find my_robot)/maps/home_service.yaml"/>
+  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+
+  <!-- AMCL -->
+  <node name="amcl" pkg="amcl" type="amcl" output="screen">
+    <param name="odom_frame_id" value="odom"/>
+    <param name="odom_model_type" value="diff-corrected"/>
+    <param name="base_frame_id" value="robot_footprint"/>
+    <param name="global_frame_id" value="map"/>
+    <param name="initial_pose_x" value="0.0"/>
+    <param name="initial_pose_y" value="0.0"/>
+    <param name="initial_pose_a" value="0.0"/>
+    <param name="tf_broadcast" value="false"/>
+
+    <rosparam file="$(find my_robot)/config/amcl_params.yaml" command="load" />
+  </node>
+
+  <!-- EKF Local Localization -->
+  <node name="ekf_local_localization" pkg="robot_localization" type="ekf_localization_node" clear_params="true">
+    <rosparam command="load" file="$(find my_robot)/config/ekf_local_params.yaml" />
+    <remap from="odometry/filtered" to="odometry_local/filtered"/>
+  </node>
+
+  <!-- EKF Global Localization -->
+  <node name="ekf_global_localization" pkg="robot_localization" type="ekf_localization_node" clear_params="true">
+    <rosparam command="load" file="$(find my_robot)/config/ekf_global_params.yaml" />
+    <remap from="odometry/filtered" to="odometry_global/filtered"/>
+  </node>
+
+  <!-- Move Base -->
+  <node name="move_base" pkg="move_base" type="move_base" respawn="false" output="screen">
+    <param name="base_global_planner" value="navfn/NavfnROS" />
+    <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>
+    <param name="controller_frequency" value="5"/>
+
+    <rosparam file="$(find my_robot)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find my_robot)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find my_robot)/config/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find my_robot)/config/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find my_robot)/config/base_local_planner_params.yaml" command="load" />
+
+    <remap from="odom" to="odometry_local/filtered"/>
+  </node>
+
+</launch>

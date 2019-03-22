@@ -1,0 +1,31 @@
+<launch>
+
+  <!-- SLAM -->
+  <node name="slam_gmapping" pkg="gmapping" type="slam_gmapping">
+    <param name="base_frame" value="robot_footprint"/>
+  </node>
+
+  <!-- Frontier Exploration -->
+  <node pkg="frontier_exploration" type="explore_client" name="explore_client" output="screen"/>
+  <node pkg="frontier_exploration" type="explore_server" name="explore_server" output="screen" >
+      <param name="frequency" type="double" value="2.0"/>
+      <param name="goal_aliasing" type="double" value="1.0"/>
+
+      <rosparam file="$(find my_robot)/config/costmap_common_params.yaml" command="load" ns="explore_costmap" />
+      <rosparam file="$(find my_robot)/config/costmap_exploration_params.yaml" command="load"/>
+  </node>
+
+  <!-- Move Base -->
+  <node name="move_base" pkg="move_base" type="move_base" respawn="false" output="screen">
+    <param name="base_global_planner" value="navfn/NavfnROS" />
+    <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>
+    <param name="controller_frequency" value="5"/>
+
+    <rosparam file="$(find my_robot)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find my_robot)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find my_robot)/config/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find my_robot)/config/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find my_robot)/config/base_local_planner_params.yaml" command="load" />
+  </node>
+
+</launch>

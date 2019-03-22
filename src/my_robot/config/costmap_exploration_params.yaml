@@ -1,0 +1,14 @@
+explore_costmap:
+  rolling_window: false
+  track_unknown_space: true
+  plugins:
+    - {name: static,           type: "costmap_2d::StaticLayer"}
+    - {name: explore_boundary, type: "frontier_exploration::BoundedExploreLayer"}
+    - {name: obstacles,        type: "costmap_2d::ObstacleLayer"}
+    - {name: inflation,        type: "costmap_2d::InflationLayer"}
+  static:
+      subscribe_to_updates: true
+  explore_boundary:
+      resize_to_boundary: false
+      frontier_travel_point: middle
+      explore_clear_space: false

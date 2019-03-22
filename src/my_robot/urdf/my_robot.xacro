@@ -216,6 +216,15 @@
   </collision>
 </link>
 
+<joint name="imu_joint" type="fixed">
+  <origin xyz="0 0 0" rpy="0 0 0"/>
+  <parent link="robot_footprint"/>
+  <child link="imu_link"/>
+</joint>
+
+<link name="imu_link">
+</link>
+
 <material name="silver">
   <color rgba="0.75 0.75 0.75 1"/>
 </material>
